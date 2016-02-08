@@ -36,7 +36,6 @@ var Header = React.createClass({
 		)
 	}
 });
-
 // Order Component
 var Order = React.createClass({
 
