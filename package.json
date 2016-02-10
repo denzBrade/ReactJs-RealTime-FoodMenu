@@ -31,7 +31,7 @@
     "react-catalyst": "0.3.0",
     "react-dom": "0.14.0",
     "react-mixin": "3.0.0",
-    "react-router": "1.0.0-rc3",
+    "react-router": "^1.0.0-rc3",
     "vinyl-buffer": "1.0.0",
     "vinyl-source-stream": "1.1.0",
     "watchify": "3.4.0"

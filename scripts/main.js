@@ -1,5 +1,15 @@
+// NPM Modules
 var React = require('react');
 var ReactDOM = require('react-dom');
+var creatBrowserHistory = require('history/lib/createBrowserHistory');
+
+//React Router keeps your UI in sync with the URL
+var ReactRouter = require('react-router');
+var Router = ReactRouter.Router;
+var Route = ReactRouter.Route;
+var Navigation = ReactRouter.Navigation;
+
+
 
 // Main App Component
 var App = React.createClass({
@@ -69,5 +79,31 @@ var StorePicker = React.createClass({
 	}
 });
 
-// Take StorePicker Componenet and Render it to the DOM
-ReactDOM.render(<App />, document.querySelector('#main'));
+// NotFound Component
+var NotFound = React.createClass({
+
+	render() {
+		return (
+			<h1> Not Found! </h1>
+		)
+	}
+});
+
+
+/*
+	Routes
+ */
+
+
+var routes = (
+	// history allows you to clean up URL and still keep state without the etc generated IDs by Router
+	<Router history={ creatBrowserHistory() }>
+		<Router path="/" component={ StorePicker }/>
+		<Router path="/store/:storeId" component={ App }/>
+		<Router path="*" component={ NotFound }/>
+	</Router>
+)
+
+// Take Routes & depending on the URL it will choose which Route to display as the page
+// e.g "/" will take you to the StorePicker
+ReactDOM.render(routes, document.querySelector('#main'));
