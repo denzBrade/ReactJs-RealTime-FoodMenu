@@ -596,7 +596,7 @@ button:hover,
 input[type=submit]:hover,
 button:focus,
 input[type=submit]:focus {
-  color: #fff;
+  color: #808080;
   outline: 0;
 }
 button:hover:after,

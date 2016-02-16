@@ -8,6 +8,7 @@ var ReactRouter = require('react-router');
 var Router = ReactRouter.Router;
 var Route = ReactRouter.Route;
 var Navigation = ReactRouter.Navigation;
+var History = ReactRouter.History;
 
 // Script files
 var h = require('./helpers');
@@ -30,6 +31,33 @@ var App = React.createClass({
 	}
 })
 
+/*
+	Add fish Form
+	<AddFishForm />
+*/
+
+var AddFishForm = React.createClass({
+
+	render() {
+		return (
+			<form className="fish-edit" onSubmit={this.createFish}>
+				<input type="text" ref="name" placholder="Fish Name" />
+				<input type="text" ref="price" placholder="Fish Price" />
+				<select ref="status">
+					<option value="available">Fresh!</option>
+					<option value="unavailable">Sold Out!</option>
+				</select>
+				<textarea type="text" ref="desc" placholder="Desc"></textarea>
+				<input type="text" ref="image" placholder="URL to Image" />
+				<button type="submit"> + Add Item </button>
+			</form>
+		)
+	}
+});
+
+
+
+
 // Header Component
 var Header = React.createClass({
 
@@ -48,6 +76,7 @@ var Header = React.createClass({
 		)
 	}
 });
+
 // Order Component
 var Order = React.createClass({
 
@@ -57,12 +86,16 @@ var Order = React.createClass({
 		)
 	}
 });
+
 // Inventory Component
 var Inventory = React.createClass({
 
 	render() {
 		return (
-			<p>Inventory</p>
+			<div>
+				<h2>Inventory</h2>
+				<AddFishForm />
+			</div>
 		)
 	}
 });
@@ -70,11 +103,22 @@ var Inventory = React.createClass({
 // StorePicker Component
 var StorePicker = React.createClass({
 
+	mixins : [History],
+
+	goToStore(event) {
+		event.preventDefault();
+		// get the data from input
+		var storeId = this.refs.storeId.value;
+
+		// transition from <StorePicker /> to <App />
+		this.history.pushState(null, '/store/' + storeId);
+	},
+
 	render() {
 		return (
-			<form className="store-selector">
+			<form className="store-selector" onSubmit={ this.goToStore }> {/* 'this' refers to StorePicker */}
 				<h2>Please Enter a Store</h2>
-				<input type="text" ref="storeId" defaultValue={ h.getFunName() } required/>
+				<input type="text" ref="storeId" defaultValue={ h.getFunName()} required />
 				<input type="Submit" />
 			</form>
 		)
@@ -98,7 +142,7 @@ var NotFound = React.createClass({
 
 
 var routes = (
-	// history allows you to clean up URL and still keep state without the etc generated IDs by Router
+	// history allows you to clean up URL and still keep state without the extra generated IDs by Router
 	<Router history={ creatBrowserHistory() }>
 		<Router path="/" component={ StorePicker }/>
 		<Router path="/store/:storeId" component={ App }/>
