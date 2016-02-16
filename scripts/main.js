@@ -17,6 +17,27 @@ var h = require('./helpers');
 // Main App Component
 var App = React.createClass({
 
+	// set up initial empty state for fishes & order on load, these can then be passed data
+	getInitialState() {
+		return {
+			fishes : {},
+			order : {}
+		}
+	},
+
+	// method to add the fish to the state
+	addFish(fish) {
+		// can be used to generate a unique ID, it increments each second
+		var timestamp = (new Date()).getTime();
+
+		// update the state object by creating a unique ID e.g. 'fish-12345678'
+		this.state.fishes['fish-' + timestamp] = fish;
+
+		// set the state (pass it the state object it needs to compare (itself) to enhance performance)
+		this.setState({ fishes : this.state.fishes });
+	},
+
+	// Render our Main App component with all its child components
 	render() {
 		return (
 			<div className="catch-of-the-day">
@@ -25,7 +46,8 @@ var App = React.createClass({
 				</div>
 
 				<Order />
-				<Inventory />
+				{/* Supply addFish as a prop for inventory to access the addFish func */}
+				<Inventory addFish={this.addFish}/>
 			</div>
 		)
 	}
@@ -38,17 +60,36 @@ var App = React.createClass({
 
 var AddFishForm = React.createClass({
 
+	createFish(event) {
+		// 1. Prevent form from submitting
+		event.preventDefault();
+		// 2. Take the data from the form and create an object
+		var fish = {
+			name : this.refs.name.value,
+			price : this.refs.price.value,
+			status : this.refs.status.value,
+			desc : this.refs.desc.value,
+			image : this.refs.image.value
+		}
+
+		// 3. Add the fish to the App state
+		this.props.addFish(fish);
+		// clears the form after it has been submitted
+		this.refs.fishForm.reset();
+
+	},
+
 	render() {
 		return (
-			<form className="fish-edit" onSubmit={this.createFish}>
-				<input type="text" ref="name" placholder="Fish Name" />
-				<input type="text" ref="price" placholder="Fish Price" />
+			<form className="fish-edit" ref="fishForm" onSubmit={this.createFish}>
+				<input type="text" ref="name" placeholder="Fish Name" />
+				<input type="text" ref="price" placeholder="Fish Price" />
 				<select ref="status">
 					<option value="available">Fresh!</option>
 					<option value="unavailable">Sold Out!</option>
 				</select>
-				<textarea type="text" ref="desc" placholder="Desc"></textarea>
-				<input type="text" ref="image" placholder="URL to Image" />
+				<textarea type="text" ref="desc" placeholder="Desc"></textarea>
+				<input type="text" ref="image" placeholder="URL to Image" />
 				<button type="submit"> + Add Item </button>
 			</form>
 		)
@@ -94,7 +135,8 @@ var Inventory = React.createClass({
 		return (
 			<div>
 				<h2>Inventory</h2>
-				<AddFishForm />
+			{/* ...this.props is called a 'spread' allows you to access all of the props passed down from inventory */}
+				<AddFishForm {...this.props}/>
 			</div>
 		)
 	}
