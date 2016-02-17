@@ -37,21 +37,55 @@ var App = React.createClass({
 		this.setState({ fishes : this.state.fishes });
 	},
 
+	// method to load in JSON file of sample fishes to our 'fishes' state
+	loadSamples() {
+		this.setState({
+			fishes : require('./sample-fishes')
+		});
+	},
+
+	renderFish(key) {
+		return <Fish key={key} index={key} details={this.state.fishes[key]} />
+	},
+
 	// Render our Main App component with all its child components
 	render() {
 		return (
 			<div className="catch-of-the-day">
 				<div className="menu">
 					<Header tagline="Fresh Seadfood Good"/>
+					<ul className="list-of-fishes">
+						{Object.keys(this.state.fishes).map(this.renderFish)}
+					</ul>
 				</div>
 
 				<Order />
 				{/* Supply addFish as a prop for inventory to access the addFish func */}
-				<Inventory addFish={this.addFish}/>
+				<Inventory addFish={this.addFish} loadSamples={this.loadSamples} />
 			</div>
 		)
 	}
 })
+
+/*
+	Fish
+	<Fish />
+*/
+var Fish = React.createClass({
+	render() {
+		var details = this.props.details;
+		return (
+			<li className="menu-fish">
+				<img src={details.image} alt="" />
+				<h3 className="fish-name">
+					{details.name}
+					<span className="price">{h.formatPrice(details.price)}</span>
+				</h3>
+				<p>{details.desc}</p>
+			</li>
+		)
+	}
+});
 
 /*
 	Add fish Form
@@ -135,8 +169,10 @@ var Inventory = React.createClass({
 		return (
 			<div>
 				<h2>Inventory</h2>
-			{/* ...this.props is called a 'spread' allows you to access all of the props passed down from inventory */}
+				{/* ...this.props is called a 'spread' allows you to access all of the props passed down from inventory */}
 				<AddFishForm {...this.props}/>
+				{/* On click load the sample fishes to our application */}
+				<button onClick={this.props.loadSamples}> Load Sample Fishes </button>
 			</div>
 		)
 	}
