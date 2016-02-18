@@ -25,6 +25,14 @@ var App = React.createClass({
 		}
 	},
 
+	addToOrder(key) {
+		// when adding a item add itself + 1 if a value exists (e.g if value is 5 then new value will be 6)
+		// Else set value to 1 (assuming there is no prior this will be the first item)
+		this.state.order[key] = this.state.order[key] + 1 || 1;
+		// set the state
+		this.setState({ order : this.state.order });
+	},
+
 	// method to add the fish to the state
 	addFish(fish) {
 		// can be used to generate a unique ID, it increments each second
@@ -45,7 +53,7 @@ var App = React.createClass({
 	},
 
 	renderFish(key) {
-		return <Fish key={key} index={key} details={this.state.fishes[key]} />
+		return <Fish key={key} index={key} details={this.state.fishes[key]} addToOrder={this.addToOrder} />
 	},
 
 	// Render our Main App component with all its child components
@@ -59,7 +67,7 @@ var App = React.createClass({
 					</ul>
 				</div>
 
-				<Order />
+				<Order fishes={this.state.fishes} order={this.state.order} />
 				{/* Supply addFish as a prop for inventory to access the addFish func */}
 				<Inventory addFish={this.addFish} loadSamples={this.loadSamples} />
 			</div>
@@ -72,8 +80,21 @@ var App = React.createClass({
 	<Fish />
 */
 var Fish = React.createClass({
+	// When button is clicked run Method addToOrder
+	onButtonClick() {
+		console.log('Adding fish to order', this.props.index);
+		// variable for key
+		var key = this.props.index;
+		// Run method addToOrder
+		this.props.addToOrder(key);
+	},
+
 	render() {
 		var details = this.props.details;
+		// if status === 'available' then true otherwise false
+		var isAvailable = (details.status === 'available' ? true : false);
+		// If available button text display Add to Order otherwise display sold out
+		var buttonText = (isAvailable ? 'Add To Order' : 'Sold Out!');
 		return (
 			<li className="menu-fish">
 				<img src={details.image} alt="" />
@@ -82,6 +103,10 @@ var Fish = React.createClass({
 					<span className="price">{h.formatPrice(details.price)}</span>
 				</h3>
 				<p>{details.desc}</p>
+				{/* If product is Not avialble activate disabled feature */}
+				<button disabled={!isAvailable} onClick={this.onButtonClick}>
+					{buttonText}
+				</button>
 			</li>
 		)
 	}
@@ -131,8 +156,6 @@ var AddFishForm = React.createClass({
 });
 
 
-
-
 // Header Component
 var Header = React.createClass({
 
@@ -155,9 +178,52 @@ var Header = React.createClass({
 // Order Component
 var Order = React.createClass({
 
-	render() {
+	renderOrder(key) {
+		// pass fish data down threw props
+		var fish = this.props.fishes[key];
+		var count = this.props.order[key];
+
+		// If there is no fish, return message
+		if(!fish) {
+			return <li key={key}>Sorry fish no longer available!</li>
+		}
+
 		return (
-			<p>Order</p>
+			<li>
+				{count}lbs
+				{fish.name}
+				{/* calculate the amount ordered * price */}
+				<span className="price">{h.formatPrice(count * fish.price)}</span>
+			</li>
+		)
+	},
+
+	render() {
+		// create an array of all the fishes
+		var orderIds = Object.keys(this.props.order);
+		var total = orderIds.reduce((prevTotal, key) => {
+			var fish = this.props.fishes[key];
+			var count = this.props.order[key];
+			var isAvailable = fish && fish.status === 'available';
+
+			if(fish && isAvailable) {
+				return prevTotal + count * parseInt(fish.price) || 0;
+			}
+
+			return prevTotal;
+		}, 0);
+
+		return (
+			<div className="order-wrap">
+				<h2 className="order-title">Your order</h2>
+				<ul className="order">
+					{orderIds.map(this.renderOrder)}
+					<li className="total">
+						<strong>Total:</strong>
+						{h.formatPrice(total)}
+					</li>
+				</ul>
+			</div>
 		)
 	}
 });
