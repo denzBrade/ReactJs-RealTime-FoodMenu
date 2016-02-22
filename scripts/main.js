@@ -13,6 +13,10 @@ var History = ReactRouter.History;
 // Script files
 var h = require('./helpers');
 
+// Firebase
+var Rebase = require('re-base');
+var base = Rebase.createClass('https://reactjs-foodmenu.firebaseio.com/');
+
 
 // Main App Component
 var App = React.createClass({
@@ -23,6 +27,13 @@ var App = React.createClass({
 			fishes : {},
 			order : {}
 		}
+	},
+
+	componentDidMount() {
+		base.syncState(this.props.params.storeId + "/fishes", {
+			context : this, // Refers to app component
+			state : "fishes"
+		});
 	},
 
 	addToOrder(key) {
