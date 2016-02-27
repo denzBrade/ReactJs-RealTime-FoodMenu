@@ -17,9 +17,13 @@ var h = require('./helpers');
 var Rebase = require('re-base');
 var base = Rebase.createClass('https://reactjs-foodmenu.firebaseio.com/');
 
+var Catalyst = require('react-catalyst');
+
 
 // Main App Component
 var App = React.createClass({
+
+	mixins : [Catalyst.LinkedStateMixin],
 
 	// set up initial empty state for fishes & order on load, these can then be passed data
 	getInitialState() {
@@ -29,11 +33,29 @@ var App = React.createClass({
 		}
 	},
 
+	// invoked once on initial load to sync our local state to our firebase state
 	componentDidMount() {
 		base.syncState(this.props.params.storeId + "/fishes", {
 			context : this, // Refers to app component
 			state : "fishes"
 		});
+
+		// Restoring the local storage data when the page is reloaded
+		var localStorageRef = localStorage.getItem('order-' + this.props.params.storeId);
+
+		if(localStorageRef) {
+			// update our component state to reflect what is in localStorage
+			this.setState({
+				order : JSON.parse(localStorageRef)
+			});
+		}
+	},
+
+	// updates props and state whenever they have been changed
+	componentWillUpdate(nextProps, nextState) {
+		// HTML5 local storage - store data locally within the user's browser
+		// Local storage needs to be passed through JSON to accept an object
+		localStorage.setItem('order-' + this.props.params.storeId, JSON.stringify(nextState.order));
 	},
 
 	addToOrder(key) {
@@ -80,7 +102,8 @@ var App = React.createClass({
 
 				<Order fishes={this.state.fishes} order={this.state.order} />
 				{/* Supply addFish as a prop for inventory to access the addFish func */}
-				<Inventory addFish={this.addFish} loadSamples={this.loadSamples} />
+				<Inventory addFish={this.addFish} loadSamples={this.loadSamples}
+					fishes={this.state.fishes} linkState={this.linkState} />
 			</div>
 		)
 	}
@@ -200,7 +223,7 @@ var Order = React.createClass({
 		}
 
 		return (
-			<li>
+			<li key={key}>
 				{count}lbs
 				{fish.name}
 				{/* calculate the amount ordered * price */}
@@ -241,11 +264,28 @@ var Order = React.createClass({
 
 // Inventory Component
 var Inventory = React.createClass({
+	renderInventory(key) {
+		var linkState = this.props.linkState;
+		return(
+			<div className="fish-edit" key={key}>
+				<input type="text" valueLink={linkState('fishes.' + key + '.name')}/>
+				<input type="text" valueLink={linkState('fishes.' + key + '.price')}/>
+				<select type="text" valueLink={linkState('fishes.' + key + '.status')}>
+					<option value="available">Fresh!</option>
+					<option value="unavailable">Sold Out!</option>
+				</select>
+				<textarea type="text" valueLink={linkState('fishes.' + key + '.desc')}></textarea>
+				<input type="text" valueLink={linkState('fishes.' + key + '.image')}/>
+				<button>Remove Fish</button>
+			</div>
+		)
+	},
 
 	render() {
 		return (
 			<div>
 				<h2>Inventory</h2>
+				{Object.keys(this.props.fishes).map(this.renderInventory)}
 				{/* ...this.props is called a 'spread' allows you to access all of the props passed down from inventory */}
 				<AddFishForm {...this.props}/>
 				{/* On click load the sample fishes to our application */}
