@@ -5,11 +5,6 @@
 
 import React from 'react';
 
-// PropType Validation, making sure the correct data is passed via props
-Header.propTypes = {
-	tagline : React.PropTypes.string.isRequired
-}
-
 class Header extends React.Component {
 
 	render() {
@@ -26,6 +21,11 @@ class Header extends React.Component {
 			</header>
 		)
 	}
+}
+
+// PropType Validation, making sure the correct data is passed via props
+Header.propTypes = {
+	tagline : React.PropTypes.string.isRequired
 }
 
 export default Header;
