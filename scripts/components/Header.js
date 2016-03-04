@@ -5,12 +5,12 @@
 
 import React from 'react';
 
-var Header = React.createClass({
+// PropType Validation, making sure the correct data is passed via props
+Header.propTypes = {
+	tagline : React.PropTypes.string.isRequired
+}
 
-	// PropType Validation, making sure the correct data is passed via props
-	propTypes : {
-		tagline : React.PropTypes.string.isRequired
-	},
+class Header extends React.Component {
 
 	render() {
 		// console.log(this.props);
@@ -26,6 +26,6 @@ var Header = React.createClass({
 			</header>
 		)
 	}
-});
+}
 
 export default Header;

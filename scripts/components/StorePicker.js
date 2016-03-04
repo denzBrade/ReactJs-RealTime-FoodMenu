@@ -6,12 +6,16 @@
 import React from 'react';
 import { History } from 'react-router';
 import reactMixin from 'react-mixin';
+import autobind from 'autobind-decorator';
 
 import h from '../helpers';
 
+// binds the 'this' to directly to the entire class its placed above
+@autobind
 class StorePicker extends React.Component {
 
 	goToStore(event) {
+		console.log(this);
 		event.preventDefault();
 		// get the data from input
 		var storeId = this.refs.storeId.value;
