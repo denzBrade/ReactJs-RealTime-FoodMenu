@@ -5,8 +5,10 @@
 
 import React from 'react';
 import h from '../helpers';
+import autobind from 'autobind-decorator';
 
-var Fish = React.createClass({
+@autobind
+class Fish extends React.Component {
 	// When button is clicked run Method addToOrder
 	onButtonClick() {
 		console.log('Adding fish to order', this.props.index);
@@ -14,7 +16,7 @@ var Fish = React.createClass({
 		var key = this.props.index;
 		// Run method addToOrder
 		this.props.addToOrder(key);
-	},
+	}
 
 	render() {
 		var details = this.props.details;
@@ -37,6 +39,6 @@ var Fish = React.createClass({
 			</li>
 		)
 	}
-});
+}
 
 export default Fish;

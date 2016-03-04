@@ -4,8 +4,10 @@
  */
 
 import React from 'react';
+import autobind from 'autobind-decorator';
 
-var AddFishForm = React.createClass({
+@autobind
+class AddFishForm extends React.Component {
 
 	createFish(event) {
 		// 1. Prevent form from submitting
@@ -24,7 +26,7 @@ var AddFishForm = React.createClass({
 		// clears the form after it has been submitted
 		this.refs.fishForm.reset();
 
-	},
+	}
 
 	render() {
 		return (
@@ -41,6 +43,6 @@ var AddFishForm = React.createClass({
 			</form>
 		)
 	}
-});
+}
 
 export default AddFishForm;

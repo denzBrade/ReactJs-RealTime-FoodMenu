@@ -5,16 +5,11 @@
 
 import React from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import autobind from 'autobind-decorator';
 import h from '../helpers';
 
-var Order = React.createClass({
-
-	// PropType Validation, making sure the correct data is passed via props
-	propTypes : {
-		fishes : React.PropTypes.object.isRequired,
-		order : React.PropTypes.object.isRequired,
-		removeFromOrder : React.PropTypes.func.isRequired
-	},
+@autobind
+class Order extends React.Component {
 
 	renderOrder(key) {
 		// pass fish data down threw props
@@ -42,7 +37,7 @@ var Order = React.createClass({
 				<span className="price">{h.formatPrice(count * fish.price)}</span>
 			</li>
 		)
-	},
+	}
 
 	render() {
 		// create an array of all the fishes
@@ -78,7 +73,14 @@ var Order = React.createClass({
 				</ReactCSSTransitionGroup>
 			</div>
 		)
-	},
-});
+	}
+}
+
+// PropType Validation, making sure the correct data is passed via props
+Order.propTypes = {
+	fishes : React.PropTypes.object.isRequired,
+	order : React.PropTypes.object.isRequired,
+	removeFromOrder : React.PropTypes.func.isRequired
+}
 
 export default Order;
