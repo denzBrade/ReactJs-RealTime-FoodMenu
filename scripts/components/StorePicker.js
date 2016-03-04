@@ -5,12 +5,11 @@
 
 import React from 'react';
 import { History } from 'react-router';
+import reactMixin from 'react-mixin';
 
 import h from '../helpers';
 
-var StorePicker = React.createClass({
-
-	mixins: [History],
+class StorePicker extends React.Component {
 
 	goToStore(event) {
 		event.preventDefault();
@@ -19,7 +18,7 @@ var StorePicker = React.createClass({
 
 		// transition from <StorePicker /> to <App />
 		this.history.pushState(null, '/store/' + storeId);
-	},
+	}
 
 	render() {
 		return (
@@ -30,6 +29,9 @@ var StorePicker = React.createClass({
 			</form>
 		)
 	}
-});
+}
+
+// Es6 Requires you to add mixins via 'react-mixin' (class, Name of Mixin)
+reactMixin.onClass(StorePicker, History);
 
 export default StorePicker;

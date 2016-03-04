@@ -9,6 +9,13 @@ import h from '../helpers';
 
 var Order = React.createClass({
 
+	// PropType Validation, making sure the correct data is passed via props
+	propTypes : {
+		fishes : React.PropTypes.object.isRequired,
+		order : React.PropTypes.object.isRequired,
+		removeFromOrder : React.PropTypes.func.isRequired
+	},
+
 	renderOrder(key) {
 		// pass fish data down threw props
 		var fish = this.props.fishes[key];
@@ -72,13 +79,6 @@ var Order = React.createClass({
 			</div>
 		)
 	},
-
-	// PropType Validation, making sure the correct data is passed via props
-	propTypes : {
-		fishes : React.PropTypes.object.isRequired,
-		order : React.PropTypes.object.isRequired,
-		removeFromOrder : React.PropTypes.func.isRequired
-	}
 });
 
 export default Order;

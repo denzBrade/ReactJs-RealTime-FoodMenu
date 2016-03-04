@@ -8,6 +8,16 @@ import AddFishForm from './AddFishForm';
 
 
 var Inventory = React.createClass({
+
+	// PropType Validation, making sure the correct data is passed via props
+	propTypes : {
+		addFish : React.PropTypes.func.isRequired,
+		loadSamples : React.PropTypes.func.isRequired,
+		fishes : React.PropTypes.object.isRequired,
+		linkState : React.PropTypes.func.isRequired,
+		removeFish : React.PropTypes.func.isRequired
+	},
+
 	renderInventory(key) {
 		var linkState = this.props.linkState;
 		return(
@@ -36,15 +46,6 @@ var Inventory = React.createClass({
 				<button onClick={this.props.loadSamples}> Load Sample Fishes </button>
 			</div>
 		)
-	},
-
-	// PropType Validation, making sure the correct data is passed via props
-	propTypes : {
-		addFish : React.PropTypes.func.isRequired,
-		loadSamples : React.PropTypes.func.isRequired,
-		fishes : React.PropTypes.object.isRequired,
-		linkState : React.PropTypes.func.isRequired,
-		removeFish : React.PropTypes.func.isRequired
 	}
 });
 
